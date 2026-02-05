@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dynamic Product Filter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: #f8fafc;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    select {
+      padding: 10px 14px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .price {
+      font-size: 18px;
+      margin: 10px 0;
+      color: #0f172a;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: white;
+    }
+
+    .electronics {
+      background: #2563eb;
+    }
+
+    .clothing {
+      background: #60a5fa;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <script>
+    const { useState } = React;
+
+    function App() {
+      const products = [
+        { id: 1, name: "Wireless Headphones", price: 129.99, category: "electronics" },
+        { id: 2, name: "Cotton T-Shirt", price: 24.99, category: "clothing" },
+        { id: 3, name: "Bluetooth Speaker", price: 89.99, category: "electronics" },
+        { id: 4, name: "Denim Jeans", price: 59.99, category: "clothing" }
+      ];
+
+      const [filter, setFilter] = useState("all");
+
+      const filteredProducts =
+        filter === "all"
+          ? products
+          : products.filter(p => p.category === filter);
+
+      return React.createElement(
+        "div",
+        { className: "app" },
+
+        React.createElement("h1", null, "Product Filter"),
+
+        React.createElement(
+          "div",
+          { className: "filter-bar" },
+          React.createElement("label", null, "Filter by:"),
+          React.createElement(
+            "select",
+            { value: filter, onChange: e => setFilter(e.target.value) },
+            React.createElement("option", { value: "all" }, "All Products"),
+            React.createElement("option", { value: "electronics" }, "Electronics"),
+            React.createElement("option", { value: "clothing" }, "Clothing")
+          )
+        ),
+
+        React.createElement(
+          "div",
+          { className: "grid" },
+          filteredProducts.map(product =>
+            React.createElement(
+              "div",
+              { className: "card", key: product.id },
+              React.createElement("h3", null, product.name),
+              React.createElement(
+                "div",
+                { className: "price" },
+                "$" + product.price
+              ),
+              React.createElement(
+                "span",
+                { className: "tag " + product.category },
+                product.category
+              )
+            )
+          )
+        )
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(React.createElement(App));
+  </script>
+
+</body>
+</html>

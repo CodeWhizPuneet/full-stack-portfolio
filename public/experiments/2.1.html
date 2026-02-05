@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Live Character Counter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #020617, #0f172a);
+    }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      position: relative;
+    }
+
+    textarea {
+      width: 200%;
+      height: 260px;
+      padding: 24px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: white;
+      font-size: 20px;
+      resize: none;
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    textarea.limit {
+      border: 1px solid #ef4444;
+    }
+
+    .counter {
+      position: absolute;
+      bottom: 16px;
+      right: 22px;
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <script>
+    const { useState } = React;
+
+    function App() {
+      const maxChars = 150;
+      const [text, setText] = useState("");
+
+      return React.createElement(
+        "div",
+        { className: "container" },
+        React.createElement("textarea", {
+          placeholder: "Type your message...",
+          value: text,
+          maxLength: maxChars,
+          onChange: (e) => setText(e.target.value),
+          className: text.length === maxChars ? "limit" : ""
+        }),
+        React.createElement(
+          "div",
+          { className: "counter" },
+          text.length + "/" + maxChars
+        )
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(React.createElement(App));
+  </script>
+
+</body>
+</html>

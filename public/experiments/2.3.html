@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SVG Drawing Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #f8fafc;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+
+    button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    input[type="color"] {
+      width: 40px;
+      height: 40px;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .canvas {
+      width: 100%;
+      height: 50vh;
+      border: 2px dashed #cbd5e1;
+      border-radius: 14px;
+      margin-bottom: 15px;
+    }
+
+    .count {
+      font-size: 18px;
+      text-align: center;
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <script>
+    const { useState } = React;
+
+    function App() {
+      const [circles, setCircles] = useState([]);
+      const [color, setColor] = useState("#2563eb");
+
+      function handleClick(e) {
+        const rect = e.target.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        setCircles([
+          ...circles,
+          { x, y, r: 8, color }
+        ]);
+      }
+
+      function undo() {
+        setCircles(circles.slice(0, -1));
+      }
+
+      return React.createElement(
+        "div",
+        { className: "app" },
+
+        React.createElement(
+          "div",
+          { className: "controls" },
+          React.createElement("input", {
+            type: "color",
+            value: color,
+            onChange: e => setColor(e.target.value)
+          }),
+          React.createElement(
+            "button",
+            { onClick: undo, disabled: circles.length === 0 },
+            "Undo"
+          )
+        ),
+
+        React.createElement(
+          "svg",
+          {
+            className: "canvas",
+            onClick: handleClick,
+            viewBox: "0 0 800 400",
+            preserveAspectRatio: "none"
+          },
+          circles.map((c, i) =>
+            React.createElement("circle", {
+              key: i,
+              cx: c.x,
+              cy: c.y,
+              r: c.r,
+              fill: c.color
+            })
+          )
+        ),
+
+        React.createElement(
+          "div",
+          { className: "count" },
+          "Circles drawn: " + circles.length
+        )
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(React.createElement(App));
+  </script>
+
+</body>
+</html>
